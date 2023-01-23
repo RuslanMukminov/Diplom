@@ -28,9 +28,9 @@ public class Server {
                         var in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                         var out = new PrintWriter(socket.getOutputStream())
                 ) {
-                    String word = in.readLine();
-                    word = word.toLowerCase();
-                    List<PageEntry> pageEntryList = engine.search(word);
+                    String request = in.readLine();
+                    request = request.toLowerCase();
+                    List<PageEntry> pageEntryList = engine.search(request);
                     out.println(answerJson(pageEntryList));
                 }
             }
@@ -46,7 +46,7 @@ public class Server {
         List<String> jsonList = new ArrayList<>();
 
         if (pageEntryList.isEmpty()) {
-            return "не найдено";
+            return gson.toJson("не найдено");
         }
 
         for (PageEntry pageEntry : pageEntryList) {
