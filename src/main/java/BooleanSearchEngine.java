@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 public class BooleanSearchEngine implements SearchEngine {
     private static final String FILENAME_STOPWORDS = "stop-ru.txt";
+    private static final Set<String> stopWordsSet = new HashSet<>();
     protected Map<String, List<PageEntry>> generalPageEntryMap = new HashMap<>();
 
     public BooleanSearchEngine(File pdfsDir) throws IOException {
@@ -21,11 +22,11 @@ public class BooleanSearchEngine implements SearchEngine {
                                 .collect(Collectors.toList()));
             }
         }
+        stopWords();
     }
 
     @Override
     public List<PageEntry> search(String request) {
-        Set<String> stopWordsSet = stopWords();
         List<PageEntry> responseList = new ArrayList<>();
         String[] words = request.split(" ");
         for (String word : words) {
@@ -64,8 +65,7 @@ public class BooleanSearchEngine implements SearchEngine {
         return responseList;
     }
 
-    private Set<String> stopWords() {
-        Set<String> stopWordsSet = new HashSet<>();
+    private void stopWords() {
         try (var br = new BufferedReader(new FileReader(FILENAME_STOPWORDS))) {
             String stopWord;
             while ((stopWord = br.readLine()) != null) {
@@ -74,6 +74,5 @@ public class BooleanSearchEngine implements SearchEngine {
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
-        return stopWordsSet;
     }
 }
